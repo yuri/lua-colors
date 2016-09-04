@@ -779,7 +779,7 @@ Unlike lightness and saturdation, hue _loops_: the hue of 360 is actually the sa
 
 Creating a color in HSL space and converting it to RGB
 
-    > require("colors")
+    > local colors = require("colors")
     > c = colors.new(130, .8, 0.3) -- green, pretty saturated, somewhat dark
     > =tostring(c)
     #0f8923
@@ -790,7 +790,7 @@ Creating a color in HSL space and converting it to RGB
 
 You can also create this color from it's RGB code:
 
-    > require("colors")
+    > local colors = require("colors")
     > c = colors.new("#0f8923") -- green, pretty saturated, somewhat dark
     > =tostring(c)
     #0f8923

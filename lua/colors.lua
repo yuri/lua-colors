@@ -10,10 +10,12 @@
 -- * rgb_to_hsl() implementation was contributed by Markus Fleck-Graffe.
 -----------------------------------------------------------------------------
 
-module(..., package.seeall)
+local M = {}
 
 local Color = {}
 local Color_mt = {__metatable = {}, __index = Color}
+
+local rgb_string_to_hsl -- defined below
 
 -----------------------------------------------------------------------------
 -- Instantiates a new "color".
@@ -23,25 +25,26 @@ local Color_mt = {__metatable = {}, __index = Color}
 -- @param L              lightness (0.0-1.0)
 -- @return               an instance of Color
 -----------------------------------------------------------------------------
-function new(H, S, L)
+local function new(H, S, L)
    if type(H) == "string" and H:sub(1,1)=="#" and H:len() == 7 then
       H, S, L = rgb_string_to_hsl(H)
    end
    assert(Color_mt)
    return setmetatable({H = H, S = S, L = L}, Color_mt)
 end
+M.new = new
 
 -----------------------------------------------------------------------------
 -- Converts an HSL triplet to RGB
 -- (see http://homepages.cwi.nl/~steven/css/hsl.html).
 -- 
--- @param h              hue (0-360)
--- @param s              saturation (0.0-1.0)
+-- @param H              hue (0-360)
+-- @param S              saturation (0.0-1.0)
 -- @param L              lightness (0.0-1.0)
 -- @return               an R, G, and B component of RGB
 -----------------------------------------------------------------------------
 
-function hsl_to_rgb(h, s, L)
+local function hsl_to_rgb(h, s, L)
    h = h/360
    local m1, m2
    if L<=0.5 then 
@@ -67,6 +70,7 @@ function hsl_to_rgb(h, s, L)
 
    return _h2rgb(m1, m2, h+1/3), _h2rgb(m1, m2, h), _h2rgb(m1, m2, h-1/3)
 end
+M.hsl_to_rgb = hsl_to_rgb
 
 -----------------------------------------------------------------------------
 -- Converts an RGB triplet to HSL.
@@ -78,7 +82,7 @@ end
 -- @return               corresponding H, S and L components
 -----------------------------------------------------------------------------
 
-function rgb_to_hsl(r, g, b)
+local function rgb_to_hsl(r, g, b)
    --r, g, b = r/255, g/255, b/255
    local min = math.min(r, g, b)
    local max = math.max(r, g, b)
@@ -101,12 +105,15 @@ function rgb_to_hsl(r, g, b)
 
    return h * 360, s, l
 end
+M.rgb_to_hsl = rgb_to_hsl
 
+-- already local, see at the bottom
 function rgb_string_to_hsl(rgb)
    return rgb_to_hsl(tonumber(rgb:sub(2,3), 16)/256, 
                      tonumber(rgb:sub(4,5), 16)/256,
                      tonumber(rgb:sub(6,7), 16)/256)
 end
+M.rgb_string_to_hsl = rgb_string_to_hsl
 
 -----------------------------------------------------------------------------
 -- Converts the color to an RGB string.
@@ -268,3 +275,8 @@ function Color:shade(r)
 end
 
 Color_mt.__tostring = Color.to_rgb
+
+-- allow to use `colors(...)` instead of `colors.new(...)`
+setmetatable(M, {__call=function(_, ...) return new(...) end})
+
+return M
