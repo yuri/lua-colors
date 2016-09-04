@@ -127,7 +127,7 @@ function Color:to_rgb()
    local rgb = {hsl_to_rgb(self.H, self.S, self.L)}
    local buffer = "#"
    for i,v in ipairs(rgb) do
-	  buffer = buffer..string.format("%02x",math.floor(v*256+0.5))
+	  buffer = buffer..string.format("%02x",math.floor(v*255+0.5))
    end
    return buffer
 end
