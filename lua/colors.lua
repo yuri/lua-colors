@@ -109,9 +109,9 @@ M.rgb_to_hsl = rgb_to_hsl
 
 -- already local, see at the bottom
 function rgb_string_to_hsl(rgb)
-   return rgb_to_hsl(tonumber(rgb:sub(2,3), 16)/256, 
-                     tonumber(rgb:sub(4,5), 16)/256,
-                     tonumber(rgb:sub(6,7), 16)/256)
+   return rgb_to_hsl(tonumber(rgb:sub(2,3), 16)/255, 
+                     tonumber(rgb:sub(4,5), 16)/255,
+                     tonumber(rgb:sub(6,7), 16)/255)
 end
 M.rgb_string_to_hsl = rgb_string_to_hsl
 
