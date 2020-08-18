@@ -200,7 +200,10 @@ end
 -- @return               a new instance of Color
 -----------------------------------------------------------------------------
 function Color:desaturate_by(r)
-   return new(self.H, self.S*r, self.L)
+   local s = self.S * r
+   if s < 0 then s = 0 end
+   if s > 1 then s = 1 end
+   return new(self.H, s, self.L)
 end	      
 
 -----------------------------------------------------------------------------
@@ -220,7 +223,10 @@ end
 -- @return               a new instance of Color
 -----------------------------------------------------------------------------
 function Color:lighten_by(r)
-   return new(self.H, self.S, self.L*r)
+   local l = self.L * r
+   if l < 0 then l = 0 end
+   if l > 1 then l = 1 end
+   return new(self.H, self.S, l)
 end
 
 -----------------------------------------------------------------------------
